@@ -133,20 +133,6 @@ Tous les choix de transformation sont documentés dans [`DECISIONS.md`](./DECISI
 
 ---
 
-## Livrables
-
-| # | Livrable | Statut |
-|---|---|---|
-| L1 | Notebook EDA + profiling | ✅ `notebooks/olist_silver_orders_etl.ipynb` |
-| L2 | Script de nettoyage documenté | ✅ `scripts/build_silver_orders.py` |
-| L3 | Projet dbt | 🔄 En cours |
-| L4 | Dictionnaire de données | ✅ `data_dictionary.md` |
-| L5 | Dashboard Power BI | 🔄 En cours |
-| L6 | Rapport d'analyse | 🔄 En cours |
-| L7 | Dépôt Git documenté | ✅ Ce dépôt |
-| L8 | Présentation orale | 🔄 En cours |
-
----
 
 ## Stack technique
 
@@ -156,7 +142,7 @@ Tous les choix de transformation sont documentés dans [`DECISIONS.md`](./DECISI
 | Transformation | pandas 2.0+ |
 | Notebooks | Google Colab / Jupyter |
 | Modélisation | dbt-core |
-| Dashboard | Power BI Desktop |
+| Dashboard | streamlit |
 | Versionning | Git + GitHub |
 
 ---
@@ -173,4 +159,8 @@ kaggle datasets download -d olistbr/brazilian-ecommerce
 
 ---
 
-*Projet réalisé dans le cadre du cours Data Visualisation — Projet 1*
+*Projet réalisé par:
+ -**EL KIHAL KHAOULA**
+ -**EL HAJOUI MARIAM**
+ -**HARBOULI HAJAR**
+ -**OUARADI ASSIYA***
