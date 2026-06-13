@@ -120,7 +120,7 @@ Tous les choix de transformation sont documentés dans [`DECISIONS.md`](./DECISI
 
 ---
 
-## Dashboard Power BI
+## Dashboard Streamlit
 
 4 pages analytiques :
 
