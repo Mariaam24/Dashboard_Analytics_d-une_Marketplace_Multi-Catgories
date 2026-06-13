@@ -1,9 +1,0 @@
-version: 2
-
-sources:
-  - name: silver
-    schema: public
-
-    tables:
-      - name: silver_orders
-        description: "Cleaned silver orders table"

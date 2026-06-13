@@ -1,62 +1,142 @@
 """
-data_loader.py — Chargement depuis DuckDB schéma en étoile.
+data_loader.py
+Chargement sécurisé des données depuis DuckDB.
 """
 
+import os
 import duckdb
 import pandas as pd
 import streamlit as st
+
 from config import DB_PATH
 
+# =========================================================
+# LOAD DATA
+# =========================================================
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def load_data() -> pd.DataFrame:
-    conn = duckdb.connect(DB_PATH)
 
-    df = conn.execute("""
+    print("DB PATH =", DB_PATH)
+
+    # =====================================================
+    # Vérification fichier
+    # =====================================================
+
+    if not os.path.exists(DB_PATH):
+        raise FileNotFoundError(
+            f"DuckDB introuvable : {DB_PATH}"
+        )
+
+    # =====================================================
+    # Connexion
+    # =====================================================
+
+    con = duckdb.connect(DB_PATH, read_only=True)
+
+    # =====================================================
+    # Vérification tables
+    # =====================================================
+
+    tables = con.execute(
+        "SHOW TABLES"
+    ).fetchall()
+
+    print("\n=== TABLES ===")
+    print(tables)
+
+    # =====================================================
+    # QUERY PRINCIPALE
+    # =====================================================
+
+    query = """
         SELECT
             f.order_id,
-            f.quantity,
-            f.price          AS unit_price,
-            f.revenue        AS revenue_prod,
-            f.total_revenue,
-            f.freight,
-            d.Date           AS date,
+
+            d.date_key              AS date,
             d.year,
             d.month,
-            d.month_name,
             d.quarter,
-            d.week,
-            d.day_name       AS day_of_week,
+            d.week_number           AS week,
+            d.day_name              AS day_of_week,
             d.is_weekend,
-            p.product_name   AS category,
-            p.category       AS category_group,
-            p.price_tier,
-            r.region_name    AS region,
-            r.zone           AS region_state,
-            r.continent,
+            d.year_month,
+
+            f.quantity,
+            f.unit_price,
+            f.revenue_products      AS revenue_prod,
+            f.total_revenue,
+            f.freight_value         AS freight,
+
+            dp.category,
+            dp.category_group,
+            dp.price_tier,
+
+            dr.region_name          AS region,
+            dr.state_code           AS region_state,
+            dr.country,
+
             pm.payment_method,
             pm.payment_type
-        FROM main.fact_orders f
-        JOIN main.dim_date    d  ON f.date_key    = d.date_key
-        JOIN main.dim_product p  ON f.product_key = p.product_key
-        JOIN main.dim_region  r  ON f.region_key  = r.region_key
-        JOIN main.dim_payment pm ON f.payment_key = pm.payment_key
-    """).df()
 
-    conn.close()
+        FROM fact_orders f
 
-    # colonnes calculées supplémentaires
-    df['date']       = pd.to_datetime(df['date'])
-    df['year_month'] = df['date'].dt.strftime('%Y-%m')
+        LEFT JOIN dim_date d
+            ON f.date_key = d.date_key
+
+        LEFT JOIN dim_product dp
+            ON f.product_key = dp.product_key
+
+        LEFT JOIN dim_region dr
+            ON f.region_key = dr.region_key
+
+        LEFT JOIN dim_payment pm
+            ON f.payment_key = pm.payment_key
+    """
+
+    df = con.execute(query).df()
+
+    con.close()
+
+    # =====================================================
+    # DATE
+    # =====================================================
+
+    df["date"] = pd.to_datetime(df["date"])
+
+    # =====================================================
+    # DEBUG
+    # =====================================================
+
+    print("\n=== DF SHAPE ===")
+    print(df.shape)
+
+    print("\n=== COLONNES ===")
+    print(df.columns.tolist())
 
     return df
 
 
-def filter_data(df, years, regions, groups, payments) -> pd.DataFrame:
+# =========================================================
+# FILTER DATA
+# =========================================================
+
+def filter_data(
+    df,
+    years,
+    regions,
+    groups,
+    payments
+):
+
     mask = (
-        (df['year'].isin(years))          &
-        (df['region'].isin(regions))      &
-        (df['category_group'].isin(groups)) &
-        (df['payment_method'].isin(payments))
+        (df["year"].isin(years))
+        &
+        (df["region"].isin(regions))
+        &
+        (df["category_group"].isin(groups))
+        &
+        (df["payment_method"].isin(payments))
     )
-    return df[mask]
+
+    return df.loc[mask]
