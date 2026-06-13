@@ -288,12 +288,26 @@ silver_orders
         └── dim_payment (clé : payment_key)
 ```
 ---
+### fact_orders — Table de faits
+
+| Colonne  | Colonne Silver | Type | Description |
+|---|---|---|---|
+| order_id | `order_id` | VARCHAR | Clé primaire |
+| date_key | `date_key` | BIGINT | Clé étrangère → dim_date |
+| product_key | `product_key` | BIGINT | Clé étrangère → dim_product |
+| region_key | `region_key` | BIGINT | Clé étrangère → dim_region |
+| — | `payment_key` | BIGINT | Clé étrangère → dim_payment |
+| quantity | `quantity` | INTEGER | Nombre d'articles |
+| price | `unit_price` | FLOAT | Prix unitaire moyen (R$) |
+| revenue | `revenue_products` | FLOAT | CA hors port (R$) |
+
+---
 
 ### dim_date
 
 | Colonne | Type | Description |
 |---|---|---|
-| `date_key` | DATE | Clé primaire |
+| `date_key` | BIGINT | Clé primaire |
 | `year` | INTEGER | Année: 2016, 2017, 2018 |
 | `month` | INTEGER | Mois: 1 à 12 |
 | `quarter` | INTEGER | Trimestre: 1 à 4 |
