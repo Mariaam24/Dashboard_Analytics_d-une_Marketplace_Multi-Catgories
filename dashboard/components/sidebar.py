@@ -5,7 +5,6 @@ components/sidebar.py — Filtres et navigation.
 import streamlit as st
 import pandas as pd
 
-
 def render_sidebar(df: pd.DataFrame) -> dict:
     st.sidebar.markdown(
         '<div class="sidebar-brand">Olist Analytics</div>',
@@ -58,3 +57,4 @@ def render_sidebar(df: pd.DataFrame) -> dict:
         "groups":   sel_groups   if sel_groups   else all_groups,
         "payments": sel_payments if sel_payments else all_payments,
     }
+
