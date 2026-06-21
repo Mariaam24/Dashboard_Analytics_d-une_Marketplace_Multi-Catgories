@@ -1,6 +1,6 @@
 # Projet 1 — Dashboard Analytics Marketplace Olist
 
-Pipeline ETL complet sur le dataset Olist Brazilian E-Commerce, du nettoyage des données brutes jusqu'au dashboard Power BI interactif.
+Pipeline ETL complet sur le dataset Olist Brazilian E-Commerce, du nettoyage des données brutes jusqu'au dashboard streamlit interactif.
 
 ---
 
@@ -51,7 +51,7 @@ olist_project/
 BRONZE  →  9 CSV bruts (data/raw/)
 SILVER  →  silver_orders.csv (96 478 lignes, 13 colonnes)
 GOLD    →  fact_orders + dim_date + dim_product + dim_region + dim_payment
-SERVING →  Dashboard Power BI (4 pages)
+SERVING →  Dashboard streamlit (4 pages)
 ```
 
 ---
@@ -62,21 +62,23 @@ SERVING →  Dashboard Power BI (4 pages)
 
 - Python 3.10+
 - pip
+- Git
 
-### Installer les dépendances
-
-```bash
-pip install pandas numpy
-```
-
-### Lancer le pipeline
+### Lancement en 4 commandes
 
 ```bash
-cd olist_project
+# 1. Aller dans le dossier du projet
+cd Dashboard_Analytics_d-une_Marketplace_Multi-Catgories-main
+
+# 2. Installer les dépendances
+pip install pandas numpy streamlit plotly
+
+# 3. Lancer le pipeline ETL (génère silver_orders.csv)
 python scripts/build_silver_orders.py
-```
 
-Le fichier `data/silver/silver_orders.csv` sera généré automatiquement.
+# 4. Lancer le dashboard
+streamlit run dashboard/app.py
+```
 
 ---
 
